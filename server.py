@@ -3,12 +3,12 @@ import threading
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-def work_thread(conn,addr):
+def new_thread(conn,addr):
     while(1):
-        str = conn.recv(1024).decode('utf8')
-        if (str[0:4] != "exit"):
-            str = str[::-1]
-            conn.send(str.encode('utf8'))
+        data = conn.recv(1024).decode('utf8')
+        if (data[0:4] != "exit"):
+            data = data[::-1]
+            conn.send(data.encode('utf8'))
         else:
             print('Disconnect from:' + addr)
             break
@@ -23,8 +23,8 @@ def main():
     s.listen()
     while(1):
         conn,addr = s.accept()
-        print('Connecting:',addr)
-        thread = threading.Thread(target = work_thread,args=(conn,addr))
+        print('Connecting from:',addr)
+        thread = threading.Thread(target = new_thread,args=(conn,addr))
         thread.start()
 
 if __name__ == '__main__':
